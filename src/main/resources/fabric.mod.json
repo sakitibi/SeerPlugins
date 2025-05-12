@@ -1,0 +1,21 @@
+{
+    "schemaVersion": 1,
+    "id": "seerplugins",
+    "version": "2.6.0.0",
+    "name": "Seer Plugins",
+    "description": "SeerPlugins",
+    "authors": ["Sakitibi"],
+    "license": "Copyright SKNewRoles",
+    "environment": "*",
+    "entrypoints": {
+        "main": ["seer.plugins"],
+        "client": [
+            "org.example.SeerPlugins"
+        ]
+    },
+    "depends": {
+        "fabricloader": ">=0.14.21",
+        "fabric": "*",
+        "minecraft": "1.19.4"
+    }
+}
