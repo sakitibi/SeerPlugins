@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "seer.plugins"
-version = "2.6.0.0"
+version = "2.9.9.9"
 
 repositories {
     maven {
@@ -25,4 +25,23 @@ dependencies {
 
 kotlin {
     jvmToolchain(17)
+}
+
+sourceSets {
+    val main by getting {
+        java.srcDirs("src/main/kotlin")
+    }
+    val client by creating {
+        java.srcDirs("src/client/kotlin")
+        compileClasspath += main.output + configurations["modImplementation"]
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+loom {
+    runs {
+        named("client") {
+            source(sourceSets["client"])
+        }
+    }
 }
