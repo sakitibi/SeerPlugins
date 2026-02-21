@@ -8,9 +8,9 @@
     "license": "Copyright SKNewRoles",
     "environment": "*",
     "entrypoints": {
-        "main": ["seer.plugins"],
+        "main": ["com.example.SeerPlugins"],
         "client": [
-            "org.example.SeerPlugins"
+            "com.example.FlashMod"
         ]
     },
     "depends": {

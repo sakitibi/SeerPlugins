@@ -32,21 +32,14 @@ object TickHandler {
     }
 
     private fun onServerTick(server: MinecraftServer) {
-        val scoreboard = server.scoreboard
-        val meetingObjective = scoreboard.getNullableObjective("meeting") ?: return
-        val flashTeamNames = setOf("Seer", "Evilseer", "Madseer")
-
-        for (playerEntity in server.playerManager.playerList) {
-            val player = playerEntity as? ServerPlayerEntity ?: continue
+        for (player in server.playerManager.playerList) {
             val teamName = player.scoreboardTeam?.name ?: continue
 
             when (teamName) {
                 "Seer" -> {
-                    // 水色固定フラッシュ
                     FlashPacketSender.sendTo(player, 0, 191, 255)
                 }
                 "Madseer", "Evilseer" -> {
-                    // タグによって色分け
                     val tags = getScoreboardTags(player)
 
                     val flashColor = when {
