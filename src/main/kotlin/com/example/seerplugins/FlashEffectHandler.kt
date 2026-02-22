@@ -1,12 +1,11 @@
+package com.example.seerplugins
+
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import com.mojang.blaze3d.systems.RenderSystem
+import net.minecraft.client.render.*
 import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.BufferBuilder
 
 object FlashEffectHandler {
     private var flashTicks = 0
@@ -35,21 +34,26 @@ object FlashEffectHandler {
         val (r, g, b) = flashColor
         val alpha = (255 * (flashTicks.toFloat() / MAX_FLASH_TICKS)).toInt()
 
+        // レンダリング設定
         RenderSystem.enableBlend()
-        RenderSystem.disableDepthTest()
-        RenderSystem.setShader(GameRenderer.POSITION_TEXTURE_SHADER)
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
         RenderSystem.defaultBlendFunc()
+        RenderSystem.disableDepthTest()
+        
+        // 1.19.4 のシェーダー指定 (テクスチャなし、位置と色のみ)
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram)
 
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
 
+        // 描画開始 (POSITION_COLOR を使用)
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
 
-        buffer.vertex(0.0, height.toDouble(), 0.0).color(r, g, b, alpha).next()
-        buffer.vertex(width.toDouble(), height.toDouble(), 0.0).color(r, g, b, alpha).next()
-        buffer.vertex(width.toDouble(), 0.0, 0.0).color(r, g, b, alpha).next()
-        buffer.vertex(0.0, 0.0, 0.0).color(r, g, b, alpha).next()
+        // 行列を適用して描画
+        val matrix = matrices.peek().positionMatrix
+        buffer.vertex(matrix, 0.0f, height.toFloat(), 0.0f).color(r, g, b, alpha).next()
+        buffer.vertex(matrix, width.toFloat(), height.toFloat(), 0.0f).color(r, g, b, alpha).next()
+        buffer.vertex(matrix, width.toFloat(), 0.0f, 0.0f).color(r, g, b, alpha).next()
+        buffer.vertex(matrix, 0.0f, 0.0f, 0.0f).color(r, g, b, alpha).next()
 
         tessellator.draw()
 
